@@ -1,5 +1,16 @@
 {% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
 {% block content %}
+
+{% if form.erros %}
+<p>
+	Tu usuario o contraseña no son válidos. Por favor vuelve a intentar.
+</p>
+{% endif %}
 <!-- grow -->
 	<div class="grow">
 		<div class="container">
@@ -12,22 +23,27 @@
 		<div class="account">
 		<div class="account-pass">
 		<div class="col-md-12 account-top">
-			<form action="#" method="post">
-
+			<form action="{% url 'login' %}" method="post">
+				{% csrf_token %}
 			<div>
-				<span>Email</span>
-				<input type="text">
+				<span>{{ form.username.label_tag }}</span>
+				{{ form.username }}
 			</div>
 			<div>
-				<span >Contraseña</span>
-				<input type="password">
+				<span >{{ form.password.label_tag }}</span>
+				{{ form.password }}
 			</div>
 			<div style="text-align: center;">
 				<input type="submit" value="Iniciar Sesión">
 				<br><br>
-				¿No tienes una cuenta?
+				¿No tienes una cuenta?<br />
 				<br>
-				<input type="submit" value="Regístrate">
+				<a href="None">
+					Si no tienes cuenta regístrate<br />
+				</a><br />
+				<a href="None">
+					¿Olvidaste tu contraseña?
+				</a>
 				</div>
 			</form>
 		</div>
@@ -37,5 +53,4 @@
 
 </div>
 
-<!--//content-->
 {% endblock %}
