@@ -38,16 +38,12 @@ class Community(models.Model):
     creator = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='creator')
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50)
-
-
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='service_owner')
-    community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='cumminity')
-    tags = models.ManyToManyField(Tag)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='community', default=None)
+    tags = models.CharField(max_length=250, default='')
 
 
 class ServiceComment(models.Model):

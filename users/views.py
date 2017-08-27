@@ -3,13 +3,14 @@ from django.views.generic import TemplateView
 from django.db.models import Q
 import users.models as models
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import RegisterForm
+from .forms import RegisterForm, ServiceForm, CommentForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-class ServiceList(ListView, LoginRequiredMixin):
-
+class ServiceList(LoginRequiredMixin, ListView):
+    login_url = 'login'
+    redirect_field_name = 'services'
     context_object_name = 'service_list'
     template_name = 'users/services.html'
 
@@ -20,18 +21,22 @@ class ServiceList(ListView, LoginRequiredMixin):
         services = models.Service.objects.none()
         for filter_ in filters:
             communities.union(models.Community.filter(filter=filter_.id))
-        if self.request.GET.get('query'):
-            services.union(models.Service.filter(Q(name__icontains=self.request.request.GET.get('query'))))
+        queries = self.request.GET.get('query')
+        queries = queries.split(' ') if queries is not None else None
+        if queries:
+            for query in queries:
+                for community in communities:
+                    services.union(models.Service.filter(Q(name__icontains=query) | Q(tags__icontains=query) | Q(community=community)))
         else:
             for community in communities:
-                services.union(models.Service.filter(community=community.id))
+                services.union(models.Service.filter(community=community))
         return services
 
 
 class ProfileView(TemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(kwargs)
+        context = super().get_context_data(**kwargs)
         profile_id = kwargs.get('profile_id')
         if profile_id:
             profile = models.Profile.get(pk=profile_id)
@@ -40,6 +45,41 @@ class ProfileView(TemplateView):
         context['profile'] = profile
         comments = models.Comment.filter(target=profile)
         context['comments'] = comments
+
+class ServiceCreate(TemplateView):
+
+    template_name = 'users/new_service.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ServiceForm()
+        return context
+
+    def post(self, **kwargs):
+        form = ServiceForm(self.request.POST)
+        if form.is_valid():
+            service = form.save(False)
+            service.owner = models.Profile.objects.get(user=self.request.user)
+            service.community = kwargs['community_id']
+            service.save()
+        return redirect('services_list')
+
+class CommentForm(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
+
+    def post(self, **kwargs):
+        form = CommentForm(self.request.POST)
+        if form.is_valid():
+            comment = form.save(False)
+            comment.author = models.Profile.objects.get(user=self.request.user)
+            comment.target = models.Profile.objects.get(id=kwargs['profile_id'])
+            comment.save()
+        return redirect('/')
+
 
 def signup(request):
     if request.method == "GET":

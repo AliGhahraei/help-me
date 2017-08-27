@@ -1,11 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+from users.models import Service, Comment
 
 
 class RegisterForm(forms.ModelForm):
-    username = forms.CharField(max_length=50)
-    email = forms.EmailField(max_length=252)
-    password = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
 
     def clean(self):
@@ -21,3 +19,17 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'password', 'username']
+
+
+class ServiceForm(forms.ModelForm):
+
+    class Meta:
+        model = Service
+        fields = ['name', 'description', 'tags']
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['content']
