@@ -80,7 +80,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</li>
 					<li class="grid"><a class="color2" href="#">Objetos Perdidos</a>
 				</li>
+        {% if not user.is_authenticated %}
 				<li><a class="color4" href="login.html">Login</a></li>
+        {% endif %}
 				<li><a class="color6" href="contact.html">Perfil</a></li>
 			  </ul>
 			</div>

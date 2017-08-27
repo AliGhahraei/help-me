@@ -10,7 +10,7 @@ from django.urls import reverse
 
 class ServiceList(LoginRequiredMixin, ListView):
     login_url = 'login'
-    redirect_field_name = 'services'
+    redirect_field_name = 'next'
     context_object_name = 'service_list'
     template_name = 'users/services.html'
 
@@ -33,7 +33,9 @@ class ServiceList(LoginRequiredMixin, ListView):
         return services
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    redirect_field_name = 'next'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +48,22 @@ class ProfileView(TemplateView):
         comments = models.Comment.filter(target=profile)
         context['comments'] = comments
 
-class ServiceCreate(TemplateView):
+class ServiceView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    redirect_field_name = 'next'
+
+    def get_context_data(self, **kwargs):
+        context  = super().get_context_data(**kwargs)
+        service = models.Service.objects.get(pk=kwargs['service_id'])
+        comments = models.ServiceComment.objects.filter(target=service)
+        context['service'] = service
+        context['comments'] = comments
+        return context
+
+
+class ServiceCreate(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    redirect_field_name = 'next'
 
     template_name = 'users/new_service.html'
 
