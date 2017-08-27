@@ -16,8 +16,8 @@ class ServiceList(ListView, LoginRequiredMixin):
     def get_queryset(self):
         profile = models.Profile.objects.get(user__id=self.request.user.id)
         filters = profile.filters.all()
-        communities = models.Community.none()
-        services = models.Service.none()
+        communities = models.Community.objects.none()
+        services = models.Service.objects.none()
         for filter_ in filters:
             communities.union(models.Community.filter(filter=filter_.id))
         if self.request.GET.get('query'):
@@ -55,7 +55,7 @@ def signup(request):
             user = authenticate(username=user.username, password=request.POST['password'])
 
             domain_name = form.cleaned_data['email'].split('@')[1]
-            if not Filter.objects.filter(name=domain_name).exists():
+            if not models.Filter.objects.filter(name=domain_name).exists():
                 filter_ = models.Filter(name=domain_name)
                 filter_.save()
             else:
