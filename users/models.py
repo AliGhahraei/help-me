@@ -45,7 +45,8 @@ class Tag(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='service_owner')
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='cumminity')
     tags = models.ManyToManyField(Tag)
 
 
