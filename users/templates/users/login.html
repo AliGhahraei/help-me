@@ -7,13 +7,11 @@
 </p>
 {% endif %}
 
-{% if next %}
 	{% if user.is_authenticated %}
 	<p>
 		Tu cuenta no tiene permiso para accesar a esta página
 	</p>
 	{% endif %}
-{% endif %}
 <!-- grow -->
 	<div class="grow">
 		<div class="container">
@@ -27,7 +25,7 @@
 		<div class="account-pass">
 		<div class="col-md-12 account-top">
 			<form action="{% url 'login' %}" method="post">
-
+				{% csrf_token %}
 			<div>
 				<span>{{ form.username.label_tag }}</span>
 				{{ form.username }}
