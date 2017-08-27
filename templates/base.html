@@ -55,8 +55,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</div>
 
 <!-- search-scripts -->
-					<script src="js/classie.js"></script>
-					<script src="js/uisearch.js"></script>
+					<script src="{% static 'js/classie.js' %}"></script>
+					<script src="{% static 'js/uisearch.js' %}"></script>
 						<script>
 							new UISearch( document.getElementById( 'sb-search' ) );
 						</script>
@@ -76,10 +76,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  <div class=" h_menu4">
 				<ul class="memenu skyblue">
 					  <li><a class="color8" href="index.html">Ayuda</a></li>
-				      <li><a class="color1" href="#">Necesito prestado</a>
+					  <li><a class="color1" href="#">Necesito prestado</a>
 					</li>
-				    <li class="grid"><a class="color2" href="#">Objetos Perdidos</a>
-			    </li>
+					<li class="grid"><a class="color2" href="#">Objetos Perdidos</a>
+				</li>
 				<li><a class="color4" href="login.html">Login</a></li>
 				<li><a class="color6" href="contact.html">Perfil</a></li>
 			  </ul>
@@ -127,12 +127,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<p>© 2017 Help me . Derechos reservados. | Design by  <a href="http://w3layouts.com/" target="_blank">W3layouts</a> </p>
 		</div>
 		</div>
-    <!-- search-scripts -->
-    					<script src="{% static 'js/classie.js' %}"></script>
-    					<script src="{% static 'js/uisearch.js' %}"></script>
-    						<script>
-    							new UISearch( document.getElementById( 'sb-search' ) );
-    						</script>
-    	<!-- //search-scripts -->
+	<!-- search-scripts -->
+						<script src="{% static 'js/classie.js' %}"></script>
+						<script src="{% static 'js/uisearch.js' %}"></script>
+							<script>
+								new UISearch( document.getElementById( 'sb-search' ) );
+							</script>
+		<!-- //search-scripts -->
 </body>
 </html>

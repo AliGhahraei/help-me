@@ -3,6 +3,10 @@ from django.views.generic import TemplateView
 from django.db.models import Q
 import users.models as models
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import RegisterForm
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 class ServiceList(ListView, LoginRequiredMixin):
 
@@ -36,3 +40,31 @@ class ProfileView(TemplateView):
         context['profile'] = profile
         comments = models.Comment.filter(target=profile)
         context['comments'] = comments
+
+def signup(request):
+    if request.method == "GET":
+        form = RegisterForm()
+        return render(request, 'users/register.html', {'form': form})
+    if request.method == "POST":
+        form = RegisterForm(data=request.POST)
+        if form.is_valid():
+            user = form.save(False)
+            user.set_password(user.password)
+            user.save()
+            profile = models.Profile(user=user)
+            user = authenticate(username=user.username, password=request.POST['password'])
+
+            domain_name = form.cleaned_data['email'].split('@')[1]
+            if not Filter.objects.filter(name=domain_name).exists():
+                filter_ = models.Filter(name=domain_name)
+                filter_.save()
+            else:
+                filter_ = models.Filter.objects.get(name=domain_name)
+
+            profile.filter = filter_
+            profile.save()
+
+            login(request, user)
+            return redirect('/')
+
+        return redirect('/adios-amigow')
